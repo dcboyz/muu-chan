@@ -14,6 +14,8 @@ export interface IQuestion {
 
 export interface ILeetcodeOptions {
   tag: string;
+
+  // Per-default, I'm not listening to this config in any way. I'm just excluding hard questions
   difficulty?: number;
 }
 
@@ -45,6 +47,19 @@ export async function crawlLeetcodeForQuestions(options: ILeetcodeOptions) {
     const links: IQuestion[] = [];
 
     for (const element of elements) {
+      // I'm looking at the table row
+      const tableRow = element.parentNode!.parentNode!;
+      
+      // The difficulty element is the only one in the row with class .round
+      const difficultyContainer = tableRow.querySelector(".round");
+
+      const difficulty = difficultyContainer?.textContent?.toLowerCase()
+
+      // We don't want hard questions for now
+      if ( difficulty == "hard") {
+        continue;
+      }
+
       const link = element.firstChild as HTMLLinkElement;
 
       links.push({ title: link.textContent!, href: link.href! });
