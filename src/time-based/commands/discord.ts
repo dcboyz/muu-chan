@@ -34,7 +34,7 @@ export function* getChannels(
   guilds: Collection<string, OAuth2Guild>,
   name: string,
 ) {
-  const seen: Set<string> = new Set();
+  const seen = new Set();
 
   for (const [_, guild] of guilds) {
     const channels = guild.client.channels.cache;
