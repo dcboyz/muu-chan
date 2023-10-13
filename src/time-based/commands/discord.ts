@@ -7,28 +7,10 @@ import {
   OAuth2Guild,
 } from "discord.js";
 
-import { IQuestion } from "./leetcode.js";
-
 export type ActualChannel = Channel & {
   name: string;
   send(message: { embeds: EmbedBuilder[] }): void;
 };
-
-export interface IMessage {
-  question: IQuestion;
-  background: string;
-  description: string;
-}
-
-export function createEmbed(message: IMessage) {
-  const { question, background, description } = message;
-
-  return new EmbedBuilder()
-    .setURL(question.href)
-    .setTitle(question.title)
-    .setImage(background)
-    .setDescription(description);
-}
 
 export function* getChannels(
   guilds: Collection<string, OAuth2Guild>,

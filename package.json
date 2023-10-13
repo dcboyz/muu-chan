@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc --project tsconfig.json",
-    "timebased": "node dist/time-based/index.js"
+    "timebased": "node dist/time-based/index.js",
+    "server": "node dist/server/index.js"
   },
   "keywords": [],
   "author": "",

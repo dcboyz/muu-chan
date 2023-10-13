@@ -1,7 +1,10 @@
-import { chooseRandom } from "./helpers.js";
-import { crawlLeetcodeForQuestions } from "./leetcode.js";
-import { getWaifuImageOrGif } from "./waifu.js";
-import { broadcastDiscordMessage, createEmbed } from "./discord.js";
+import { createEmbed } from "../../helpers/discord.js";
+import { chooseRandom } from "../../helpers/arrays.js";
+
+import { crawlLeetcodeForQuestions } from "../../domains/leetcode/leetcode.js";
+import { getWaifuImageOrGif } from "../../domains/waifu/waifu.js";
+
+import { broadcastDiscordMessage } from "./discord.js";
 
 export async function broadcastLeetcodeQuestion() {
   const token: string = process.env.TOKEN as string;
