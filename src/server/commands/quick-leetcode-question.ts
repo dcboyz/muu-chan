@@ -1,5 +1,4 @@
 import {
-  APIApplicationCommandOptionChoice,
   Interaction,
   SlashCommandBooleanOption,
   SlashCommandBuilder,
