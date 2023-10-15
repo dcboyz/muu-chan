@@ -6,8 +6,7 @@
   "scripts": {
     "compile": "tsc --project tsconfig.json",
     "timebased": "node dist/time-based/index.js",
-    "server": "node dist/server/index.js",
-    "oauth": "node dist/oauth/mal.js"
+    "server": "node dist/server/index.js"
   },
   "keywords": [],
   "author": "",

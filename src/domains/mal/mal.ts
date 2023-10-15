@@ -6,11 +6,12 @@ const MAL_BASE_URL = "https://myanimelist.net/v1";
 const RESPONSE_TYPE = "code";
 
 export function getAskForUserPermissionsUri(state: string) {
+  const redirect_uri = process.env.AZURE_MAL_OAUTH_URL as string;
   const clientId = process.env.MAL_CLIENT_ID as string;
 
   const codeChallenge = generateSafeToken();
 
-  const redirectUri = escape("http://localhost:4000/oauth");
+  const redirectUri = escape(redirect_uri);
 
   const escapedState = escape(state);
 
