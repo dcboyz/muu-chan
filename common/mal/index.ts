@@ -1,6 +1,6 @@
 import { escape } from "querystring";
 
-import { generateSafeToken } from "../../helpers/crypto";
+import { generateSafeToken } from "../crypto";
 
 const MAL_BASE_URL = "https://myanimelist.net/v1";
 const RESPONSE_TYPE = "code";

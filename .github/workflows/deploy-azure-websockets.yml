@@ -24,6 +24,13 @@ jobs:
         with:
           node-version: "18.x"
 
+      - name: Build common packages
+        working-directory: ./common
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+
       - name: npm install, build, and test
         run: |
           npm install
