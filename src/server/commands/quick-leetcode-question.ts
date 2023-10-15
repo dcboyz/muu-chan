@@ -11,15 +11,7 @@ import { createEmbed } from "../../helpers/discord.js";
 import { crawlLeetcodeForQuestions } from "../../domains/leetcode/leetcode.js";
 import { getWaifuImageOrGif } from "../../domains/waifu/waifu.js";
 
-type ActualInteraction = Interaction & {
-  options: {
-    getString(tag: string): string | undefined;
-  };
-
-  deferReply(): Promise<void>;
-
-  editReply(body: any): Promise<void>;
-};
+import { ActualInteraction } from "./common-types.js";
 
 function createCommand() {
   const tagString = process.env.TAGS as string;
@@ -40,7 +32,9 @@ function createCommand() {
 
   const command = new SlashCommandBuilder()
     .setName("quickleetcode")
-    .setDescription("Get an easy/medium problem from Leetcode on a selected or random tag")
+    .setDescription(
+      "Get an easy/medium problem from Leetcode on a selected or random tag",
+    )
     .addStringOption(commandOptions)
     .addBooleanOption(difficultyOptions);
 
@@ -69,7 +63,7 @@ async function execute(interaction: Interaction) {
 
   const description = `Got question **${question.title}**!\n\nCategory: ${tag}`;
 
-  const embed = createEmbed({ question, background, description });
+  const embed = createEmbed({ action: question, background, description });
 
   await actualInteraction.editReply({ embeds: [embed] });
 }

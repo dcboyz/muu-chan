@@ -1,29 +1,34 @@
 import dotenv from "dotenv";
 import path from "path";
 
-import { Client, Events, GatewayIntentBits, REST, Routes } from "discord.js";
+import { Client, Events, GatewayIntentBits } from "discord.js";
 
-import { command as quickLeetcodeQuestion } from "./commands/quick-leetcode-question.js";
+import { commandContainer } from "./command-container";
+
+import { registerCommands } from "./rest";
 
 dotenv.config({ path: path.resolve(__dirname, "../", "../", ".env") });
 
-const token = process.env.TOKEN as string;
-const clientId = process.env.CLIENT_ID as string;
+function listenToCommands() {
+  // For some reason we need to register commands through REST first
+  registerCommands(commandContainer.getCommands())
+    .then(() => console.log("Successfully registered commands"));
 
-const quickLeetcodeQuestionSlashCommand = quickLeetcodeQuestion.createCommand();
-const slashCommands = [quickLeetcodeQuestionSlashCommand];
+  const discordWebsocket = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-// We need to register slashCommands through REST
-const discordRestClient = new REST().setToken(token);
-discordRestClient.put(Routes.applicationCommands(clientId), { body: slashCommands });
+  discordWebsocket.on(Events.InteractionCreate, async (interaction) => {
+    if (!interaction.isChatInputCommand()) return;
 
-const discordWebsocketServer = new Client({ intents: [GatewayIntentBits.Guilds] });
-discordWebsocketServer.on(Events.InteractionCreate, async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
+    const commandName = interaction.commandName;
 
-  if (interaction.commandName == quickLeetcodeQuestionSlashCommand.name) {
-    await quickLeetcodeQuestion.execute(interaction);
-  }
-});
+    const executor = commandContainer.getExecutorForCommand(commandName);
 
-discordWebsocketServer.login(token);
+    await executor(interaction);
+  });
+
+  const token = process.env.TOKEN as string;
+
+  discordWebsocket.login(token);
+}
+
+listenToCommands();

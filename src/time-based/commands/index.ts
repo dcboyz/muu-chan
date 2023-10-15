@@ -22,7 +22,7 @@ export async function broadcastLeetcodeQuestion() {
   const description =
     `Todays leetcode challenge is **${question.title}**!\n\nCategory: ${tag}`;
 
-  const embed = createEmbed({ question, background, description });
+  const embed = createEmbed({ action: question, background, description });
 
   await broadcastDiscordMessage(token, embed);
 }

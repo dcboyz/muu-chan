@@ -1,12 +1,5 @@
 import puppeteer, { PuppeteerLaunchOptions } from "puppeteer";
 
-export enum LeetcodeDifficulty {
-  ANY = 0,
-  EASY = 1,
-  MEDIUM = 2,
-  HARD = 4,
-}
-
 export interface IQuestion {
   title: string;
   href: string;
@@ -16,7 +9,7 @@ export interface ILeetcodeOptions {
   tag: string;
 
   // Per-default, I'm not listening to this config in any way. I'm just excluding hard questions
-  difficulty?: number;
+  includeHards?: boolean;
 }
 
 export async function crawlLeetcodeForQuestions(options: ILeetcodeOptions) {
