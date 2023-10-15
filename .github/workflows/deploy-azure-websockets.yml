@@ -60,7 +60,7 @@ jobs:
           name: node-app
 
       - name: Unzip Artifact for Deployment
-        run: unzip -d ./azure-websockets/release.zip
+        run: unzip -d azure-websockets release.zip
 
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
