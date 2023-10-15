@@ -1,0 +1,23 @@
+{
+  "name": "azure-websockets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "server": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.13.0",
+    "dotenv": "^16.3.1",
+    "common": "../common"
+  },
+  "devDependencies": {
+    "@types/knex": "^0.16.1",
+    "@types/tedious": "^4.0.12",
+    "typescript": "^5.2.2"
+  }
+}
