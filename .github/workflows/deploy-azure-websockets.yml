@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./azure-websockets
+    working-directory: azure-websockets
 
 jobs:
   build:
