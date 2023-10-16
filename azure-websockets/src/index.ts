@@ -36,7 +36,7 @@ function fAzure() {
   // We need to create this otherwise Azure will kill our App Container...
   server.get("/", (_, res) => res.send());
 
-  server.listen(process.env.PORT || 8080);
+  server.listen(process.env.PORT || 80);
 }
 
 void (async function main() {
