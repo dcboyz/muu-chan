@@ -59,9 +59,6 @@ jobs:
         with:
           name: node-app
 
-      - name: Unzip Artifact for Deployment
-        run: unzip -d azure-websockets release.zip
-
       - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
@@ -69,4 +66,4 @@ jobs:
           app-name: "muu-chan-commands"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EEC0BFD2E7744408B715CCC0C6EFF778 }}
-          package: ./azure-websockets/release.zip
+          package: release.zip
