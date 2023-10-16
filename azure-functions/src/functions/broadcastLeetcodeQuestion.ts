@@ -3,10 +3,10 @@ import { config as configEnvironment } from "dotenv";
 
 configEnvironment();
 
-import { chooseRandom } from "common/arrays";
-import { crawlLeetcodeForQuestions } from "common/leetcode";
-import { getWaifuImageOrGif } from "common/waifu";
-import { createEmbed, broadcastDiscordMessage } from "common/discord";
+import { chooseRandom } from "./common/arrays";
+import { crawlLeetcodeForQuestions } from "./common/leetcode";
+import { getWaifuImageOrGif } from "./common/waifu";
+import { createEmbed, broadcastDiscordMessage } from "./common/discord";
 
 export async function broadcastLeetcodeQuestion(_: Timer, __: InvocationContext): Promise<void> {
   const token: string = process.env.DISCORD_BOT_TOKEN as string;
@@ -28,6 +28,6 @@ export async function broadcastLeetcodeQuestion(_: Timer, __: InvocationContext)
 }
 
 app.timer("broadcastLeetcodeQuestion", {
-  schedule: "30 17 * * * *",
+  schedule: "0 30 17 * * *",
   handler: broadcastLeetcodeQuestion,
 });
