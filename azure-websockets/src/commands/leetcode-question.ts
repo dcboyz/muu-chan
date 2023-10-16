@@ -1,9 +1,9 @@
 import { Interaction, SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
 
-import { chooseRandom } from "common/arrays";
-import { createEmbed } from "common/discord";
-import { crawlLeetcodeForQuestions } from "common/leetcode";
-import { getWaifuImageOrGif } from "common/waifu";
+import { chooseRandom } from "../common/arrays";
+import { createEmbed } from "../common/discord";
+import { crawlLeetcodeForQuestions } from "../common/leetcode";
+import { getWaifuImageOrGif } from "../common/waifu";
 
 import { ActualInteraction } from "./common-types.js";
 

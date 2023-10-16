@@ -2,10 +2,10 @@ import { Interaction, SlashCommandBuilder } from "discord.js";
 
 import { ActualInteraction } from "./common-types";
 
-import { createEmbed } from "common/discord";
-import { getAskForUserPermissionsUri } from "common/mal";
-import { getWaifuImageOrGif } from "common/waifu";
-import { connection } from "common/azure-db";
+import { createEmbed } from "../common/discord";
+import { getAskForUserPermissionsUri } from "../common/mal";
+import { getWaifuImageOrGif } from "../common/waifu";
+import { connection } from "../common/azure-db";
 
 function createCommand() {
   const command = new SlashCommandBuilder().setName("mallogin").setDescription("Log into MAL account");

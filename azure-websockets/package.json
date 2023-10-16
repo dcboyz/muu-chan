@@ -14,7 +14,9 @@
   "dependencies": {
     "discord.js": "^14.13.0",
     "dotenv": "^16.3.1",
-    "common": "../common"
+    "knex": "^3.0.1",
+    "puppeteer": "^21.3.8",
+    "tedious": "^16.4.1"
   },
   "devDependencies": {
     "@types/knex": "^0.16.1",
