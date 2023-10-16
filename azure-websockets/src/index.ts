@@ -29,4 +29,6 @@ async function listenToCommands() {
   discordWebsocket.login(token);
 }
 
-listenToCommands();
+void (async function main() {
+  await listenToCommands();
+})();
