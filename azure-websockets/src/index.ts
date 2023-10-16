@@ -34,9 +34,7 @@ function fAzure() {
   const server = express();
 
   // We need to create this otherwise Azure will kill our App Container...
-  server.get("/", (_, res) => {
-    res.send({ message: "ping" });
-  });
+  server.get("/", (_, res) => res.send());
 
   server.listen(process.env.PORT || 8080);
 }
