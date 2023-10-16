@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import express from "express";
 import { Client, Events, GatewayIntentBits, Interaction } from "discord.js";
 
 // That's really only needed for local development
@@ -29,6 +30,18 @@ async function listenToCommands() {
   discordWebsocket.login(token);
 }
 
+function fAzure() {
+  const server = express();
+
+  // We need to create this otherwise Azure will kill our App Container...
+  server.get("/", (_, res) => {
+    res.send({ message: "ping" });
+  });
+
+  server.listen(process.env.PORT || 8080);
+}
+
 void (async function main() {
+  fAzure();
   await listenToCommands();
 })();
