@@ -69,4 +69,4 @@ jobs:
           app-name: "muu-chan-commands"
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EEC0BFD2E7744408B715CCC0C6EFF778 }}
-          package: .
+          package: ./azure-websockets/release.zip
