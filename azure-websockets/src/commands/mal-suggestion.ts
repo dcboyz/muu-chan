@@ -40,8 +40,8 @@ async function execute(interaction: Interaction) {
 
   const now = new Date();
 
-  if (token.tokenValidUntil < now) {
-    if (token.refreshTokenValidUntil < now) {
+  if (new Date(token.tokenValidUntil) < now) {
+    if (new Date(token.refreshTokenValidUntil) < now) {
       await actualInteraction.editReply("Your authentication expired. Please log in again to MAL using /mallogin");
 
       return;
@@ -52,8 +52,8 @@ async function execute(interaction: Interaction) {
     await connection("MAL_OAUTH").where({ guild_id: guildId, user_id: userId }).update({
       token: token.token,
       refresh_token: token.refreshToken,
-      token_valid_until: token.tokenValidUntil,
-      refresh_token_valid_until: token.refreshTokenValidUntil,
+      token_valid_until: token.tokenValidUntil.getTime(),
+      refresh_token_valid_until: token.refreshTokenValidUntil.getTime(),
     });
   }
 
