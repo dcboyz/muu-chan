@@ -8,7 +8,7 @@ import { getWaifuImageOrGif } from "../common/waifu";
 import { connection } from "../common/azure-db";
 
 function createCommand() {
-  const command = new SlashCommandBuilder().setName("mallogin").setDescription("Log into MAL account");
+  const command = new SlashCommandBuilder().setName("mal-login").setDescription("Log into MAL account");
 
   return command;
 }

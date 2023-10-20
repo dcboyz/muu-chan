@@ -1,8 +1,9 @@
 import { Interaction } from "discord.js";
 
-import { SlashCommand } from "./common-types.js";
-import { command as quickLeetcodeQuestion } from "./leetcode-question.js";
-import { command as malLogin } from "./mal-login.js";
+import { SlashCommand } from "./common-types";
+import { command as quickLeetcodeQuestion } from "./leetcode-question";
+import { command as malLogin } from "./mal-login";
+import { command as malListSuggestion } from "./mal-suggestion";
 
 type Executor = (interaction: Interaction) => Promise<void>;
 type ExecutorMap = { [key: string]: Executor };
@@ -35,6 +36,7 @@ class CommandContainer {
   private createContainer() {
     this.AddCommand(quickLeetcodeQuestion.createCommand, quickLeetcodeQuestion.execute);
     this.AddCommand(malLogin.createCommand, malLogin.execute);
+    this.AddCommand(malListSuggestion.createCommand, malListSuggestion.execute);
   }
 
   private AddCommand(commandBuilder: () => SlashCommand, executor: Executor) {
