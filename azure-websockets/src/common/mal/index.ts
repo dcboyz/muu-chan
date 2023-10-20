@@ -78,13 +78,14 @@ export async function getToken(code: string, verifier: string): Promise<IToken> 
 export async function refreshToken(refreshToken: string): Promise<IToken> {
   const clientId = process.env.MAL_CLIENT_ID as string;
   const clientSecret = process.env.MAL_CLIENT_SECRET as string;
+  const redirect_uri = process.env.AZURE_MAL_OAUTH_URL as string;
 
   const tokenRequestBody = new URLSearchParams({
     client_id: clientId,
     client_secret: clientSecret,
     refresh_token: refreshToken,
     grant_type: "refresh_token",
-    redirect_uri: "http://localhost:4000/oauth", // dummy endpoint
+    redirect_uri: redirect_uri, // dummy endpoint
   });
 
   const tokenUri = `${MAL_BASE_URL}/oauth2/token`;
