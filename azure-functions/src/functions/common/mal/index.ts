@@ -36,6 +36,7 @@ export function getAskForUserPermissionsUri(state: string) {
 export async function getToken(code: string, verifier: string): Promise<IToken> {
   const clientId = process.env.MAL_CLIENT_ID as string;
   const clientSecret = process.env.MAL_CLIENT_SECRET as string;
+  const redirect_uri = process.env.AZURE_MAL_OAUTH_URL as string;
 
   const tokenRequestBody = new URLSearchParams({
     client_id: clientId,
@@ -43,7 +44,7 @@ export async function getToken(code: string, verifier: string): Promise<IToken> 
     code: code,
     code_verifier: verifier,
     grant_type: "authorization_code",
-    redirect_uri: "http://localhost:4000/oauth", // dummy endpoint
+    redirect_uri: redirect_uri, // dummy endpoint
   });
 
   const tokenUri = `${MAL_BASE_URL}/oauth2/token`;
@@ -64,7 +65,7 @@ export async function getToken(code: string, verifier: string): Promise<IToken> 
   const tokenValidUntil = new Date(now + tokenResponseBody.expires_in * 1000);
 
   // The refresh token is valid for 31 days
-  const refreshTokenValidUntil = new Date(now + 31 * 86400);
+  const refreshTokenValidUntil = new Date(now + 31 * 86400 * 1000);
 
   return {
     token: tokenResponseBody.access_token,

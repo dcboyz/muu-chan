@@ -61,8 +61,8 @@ async function execute(interaction: Interaction) {
 
   const embeds = suggestions.map((suggestion) =>
     createEmbed({
-      action: { title: suggestion.title, href: "#" },
-      background: suggestion.main_picture.medium,
+      action: { title: suggestion.title, href: `https://myanimelist.net/anime/${suggestion.id}` },
+      background: suggestion.main_picture.large,
       description: `Muu-chan thinks that you'd like ${suggestion.title} `,
     })
   );
