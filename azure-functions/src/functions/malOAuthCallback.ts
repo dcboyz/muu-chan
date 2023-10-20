@@ -1,6 +1,9 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 
 import { connection } from "./common/azure-db";
+import { getToken } from "./common/mal";
+
+import { myAnimeListOAuthGrantedHTML } from "./templates/mal-oauth";
 
 export async function malOAuthCallback(request: HttpRequest, _: InvocationContext): Promise<HttpResponseInit> {
   const code = request.query.get("code");
@@ -12,11 +15,22 @@ export async function malOAuthCallback(request: HttpRequest, _: InvocationContex
 
   const stateDeserialized: { user: string; guild: string } = JSON.parse(state);
 
-  await connection("MAL_OAUTH")
-    .where({ guild_id: stateDeserialized.guild, user_id: stateDeserialized.user })
-    .update({ oauth_code: code });
+  const { oauthVerifier } = await connection("MAL_OAUTH")
+    .select({ oauthVerifier: "oauth_verifier" })
+    .where({ user_id: stateDeserialized.user, guild_id: stateDeserialized.guild })
+    .first();
 
-  return { body: `Thanks for granting permissions to Muu-chan uwu` };
+  const token = await getToken(code, oauthVerifier);
+
+  await connection("MAL_OAUTH").where({ guild_id: stateDeserialized.guild, user_id: stateDeserialized.user }).update({
+    oauth_code: code,
+    token: token.token,
+    refresh_token: token.refreshToken,
+    token_valid_until: token.tokenValidUntil.getTime(),
+    refresh_token_valid_until: token.refreshTokenValidUntil.getTime(),
+  });
+
+  return { body: myAnimeListOAuthGrantedHTML, headers: { "content-type": "text/html" } };
 }
 
 app.http("malOAuthCallback", {
