@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import dotenv from "dotenv";
 import express from "express";
 import { Client, Events, GatewayIntentBits, Interaction } from "discord.js";

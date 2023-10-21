@@ -26,8 +26,8 @@ export async function malOAuthCallback(request: HttpRequest, _: InvocationContex
     oauth_code: code,
     token: token.token,
     refresh_token: token.refreshToken,
-    token_valid_until: token.tokenValidUntil.getTime(),
-    refresh_token_valid_until: token.refreshTokenValidUntil.getTime(),
+    token_valid_until: token.tokenValidUntil,
+    refresh_token_valid_until: token.refreshTokenValidUntil,
   });
 
   return { body: myAnimeListOAuthGrantedHTML, headers: { "content-type": "text/html" } };

@@ -14,8 +14,8 @@ interface ITokenResponse {
 interface IToken {
   token: string;
   refreshToken: string;
-  tokenValidUntil: Date;
-  refreshTokenValidUntil: Date;
+  tokenValidUntil: number;
+  refreshTokenValidUntil: number;
 }
 
 export function getAskForUserPermissionsUri(state: string) {
@@ -62,10 +62,10 @@ export async function getToken(code: string, verifier: string): Promise<IToken> 
   const now = new Date().getTime();
 
   // ExpiresIn comes in a second format, while Node expects milliseconds
-  const tokenValidUntil = new Date(now + tokenResponseBody.expires_in * 1000);
+  const tokenValidUntil = now + tokenResponseBody.expires_in * 1000;
 
   // The refresh token is valid for 31 days
-  const refreshTokenValidUntil = new Date(now + 31 * 86400 * 1000);
+  const refreshTokenValidUntil = now + 31 * 86400 * 1000;
 
   return {
     token: tokenResponseBody.access_token,
