@@ -1,3 +1,3 @@
 export interface IOptionsMonitor<T> {
-  currentValue: () => T;
+  currentValue: () => T
 }

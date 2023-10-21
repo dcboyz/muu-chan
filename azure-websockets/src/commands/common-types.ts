@@ -1,13 +1,13 @@
-import { Interaction, SlashCommandBuilder } from "discord.js";
+import { Interaction, SlashCommandBuilder } from 'discord.js'
 
 export type ActualInteraction = Interaction & {
   options: {
-    getString(tag: string): string | undefined;
-  };
+    getString(tag: string): string | undefined
+  }
 
-  deferReply(): Promise<void>;
+  deferReply(): Promise<void>
 
-  editReply(body: any): Promise<void>;
-};
+  editReply(body: any): Promise<void>
+}
 
-export type SlashCommand = Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
+export type SlashCommand = Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>

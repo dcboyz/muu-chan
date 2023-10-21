@@ -1,12 +1,12 @@
 interface IKnexConnectionOptions {
-  server: string;
-  database: string;
-  user: string;
-  password: string;
-  table: string;
+  server: string
+  database: string
+  user: string
+  password: string
+  table: string
 }
 
 export interface IKnexConnectionProviderOptions {
-  client: string;
-  connection: IKnexConnectionOptions;
+  client: string
+  connection: IKnexConnectionOptions
 }

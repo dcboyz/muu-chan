@@ -1,10 +1,10 @@
-import knex from "knex";
-import { Service } from "typedi";
+import knex from 'knex'
+import { Service } from 'typedi'
 
-import { IKnexConnectionProvider } from "./IKnexConnectionProvider";
-import { IKnexConnectionProviderOptions } from "./IKnexConnectionProviderOptions";
+import { IKnexConnectionProvider } from './IKnexConnectionProvider'
+import { IKnexConnectionProviderOptions } from './IKnexConnectionProviderOptions'
 
-@Service("IKnexConnectionProvider")
+@Service('IKnexConnectionProvider')
 export class KnexConnectionProvider<TTable extends {}> implements IKnexConnectionProvider<TTable> {
   public createDatabaseConnection(options: IKnexConnectionProviderOptions) {
     const knexConfiguration: knex.Knex.Config = {
@@ -18,10 +18,10 @@ export class KnexConnectionProvider<TTable extends {}> implements IKnexConnectio
           encrypt: true,
         },
       },
-    };
+    }
 
-    const connection = knex<TTable>(knexConfiguration);
+    const connection = knex<TTable>(knexConfiguration)
 
-    return () => connection(options.connection.table);
+    return () => connection(options.connection.table)
   }
 }

@@ -1,47 +1,47 @@
-import "reflect-metadata";
+import 'reflect-metadata'
 
-import dotenv from "dotenv";
-import express from "express";
-import { Client, Events, GatewayIntentBits, Interaction } from "discord.js";
+import dotenv from 'dotenv'
+import express from 'express'
+import { Client, Events, GatewayIntentBits, Interaction } from 'discord.js'
 
 // That's really only needed for local development
-dotenv.config();
+dotenv.config()
 
-import { commandContainer } from "./commands/command-container";
-import { registerCommands } from "./commands/register-commands";
+import { commandContainer } from './commands/command-container'
+import { registerCommands } from './commands/register-commands'
 
 async function handleInteraction(interaction: Interaction) {
-  if (!interaction.isChatInputCommand()) return;
+  if (!interaction.isChatInputCommand()) return
 
-  const commandName = interaction.commandName;
+  const commandName = interaction.commandName
 
-  const executor = commandContainer.getExecutorForCommand(commandName);
+  const executor = commandContainer.getExecutorForCommand(commandName)
 
-  await executor(interaction);
+  await executor(interaction)
 }
 
 async function listenToCommands() {
-  await registerCommands(commandContainer.getCommands());
+  await registerCommands(commandContainer.getCommands())
 
-  const discordWebsocket = new Client({ intents: [GatewayIntentBits.Guilds] });
+  const discordWebsocket = new Client({ intents: [GatewayIntentBits.Guilds] })
 
-  discordWebsocket.on(Events.InteractionCreate, handleInteraction);
+  discordWebsocket.on(Events.InteractionCreate, handleInteraction)
 
-  const token = process.env.DISCORD_BOT_TOKEN as string;
+  const token = process.env.DISCORD_BOT_TOKEN as string
 
-  discordWebsocket.login(token);
+  discordWebsocket.login(token)
 }
 
 function fAzure() {
-  const server = express();
+  const server = express()
 
   // We need to create this otherwise Azure will kill our App Container...
-  server.get("/", (_, res) => res.send());
+  server.get('/', (_, res) => res.send())
 
-  server.listen(80);
+  server.listen(80)
 }
 
 void (async function main() {
-  fAzure();
-  await listenToCommands();
-})();
+  fAzure()
+  await listenToCommands()
+})()

@@ -1,10 +1,10 @@
-import { IAuthenticationPrincipal } from "./IAuthenticationPrincipal";
-import { ISuggestionResponse } from "./ISuggestionResponse";
+import { IAuthenticationPrincipal } from './IAuthenticationPrincipal'
+import { ISuggestionResponse } from './ISuggestionResponse'
 
 interface IMyAnimeListProvider {
-  getAuthenticationPrincipal(code: string, verifier: string): Promise<IAuthenticationPrincipal>;
+  getAuthenticationPrincipal(code: string, verifier: string): Promise<IAuthenticationPrincipal>
 
-  refreshAuthenticationPrincipal(refreshToken: string): Promise<IAuthenticationPrincipal>;
+  refreshAuthenticationPrincipal(refreshToken: string): Promise<IAuthenticationPrincipal>
 
-  getListBasedSuggestions(token: string): Promise<ISuggestionResponse>;
+  getListBasedSuggestions(token: string): Promise<ISuggestionResponse>
 }

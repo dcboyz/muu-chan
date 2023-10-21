@@ -1,5 +1,5 @@
-import { IKnexConnectionProviderOptions } from "../database/IKnexConnectionProviderOptions";
+import { IKnexConnectionProviderOptions } from '../database/IKnexConnectionProviderOptions'
 
 export interface IOAuthRepositoryOptions {
-  OAuthKnexConnectionOptions: IKnexConnectionProviderOptions;
+  OAuthKnexConnectionOptions: IKnexConnectionProviderOptions
 }

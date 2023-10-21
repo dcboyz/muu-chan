@@ -1,58 +1,58 @@
-import { Channel, Client, Collection, EmbedBuilder, GatewayIntentBits, OAuth2Guild } from "discord.js";
+import { Channel, Client, Collection, EmbedBuilder, GatewayIntentBits, OAuth2Guild } from 'discord.js'
 
-import { IQuestion } from "../leetcode";
+import { IQuestion } from '../leetcode'
 
 export interface IMessage {
-  action: IQuestion;
-  background: string;
-  description: string;
+  action: IQuestion
+  background: string
+  description: string
 }
 
 export type ActualChannel = Channel & {
-  name: string;
-  send(message: { embeds: EmbedBuilder[] }): void;
-};
+  name: string
+  send(message: { embeds: EmbedBuilder[] }): void
+}
 
 export function createEmbed(message: IMessage) {
-  const { action: question, background, description } = message;
+  const { action: question, background, description } = message
 
   return new EmbedBuilder()
     .setURL(question.href)
     .setTitle(question.title)
     .setImage(background)
-    .setDescription(description);
+    .setDescription(description)
 }
 
 export function* getChannels(guilds: Collection<string, OAuth2Guild>, name: string) {
-  const seen = new Set();
+  const seen = new Set()
 
   for (const [_, guild] of guilds) {
-    const channels = guild.client.channels.cache;
+    const channels = guild.client.channels.cache
 
     for (const [channelId, channel] of channels) {
-      if (seen.has(channelId)) continue;
+      if (seen.has(channelId)) continue
 
-      const actualChannel = channel as ActualChannel;
+      const actualChannel = channel as ActualChannel
 
       if (actualChannel.isTextBased() && actualChannel.name == name) {
-        yield actualChannel;
+        yield actualChannel
       }
 
-      seen.add(channelId);
+      seen.add(channelId)
     }
   }
 }
 
 export async function broadcastDiscordMessage(token: string, message: EmbedBuilder) {
-  const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+  const client = new Client({ intents: [GatewayIntentBits.Guilds] })
 
-  await client.login(token);
+  await client.login(token)
 
-  const guilds = await client.guilds.fetch();
+  const guilds = await client.guilds.fetch()
 
-  for (const leetcodeChannel of getChannels(guilds, "leetcode")) {
-    await leetcodeChannel.send({ embeds: [message] });
+  for (const leetcodeChannel of getChannels(guilds, 'leetcode')) {
+    await leetcodeChannel.send({ embeds: [message] })
   }
 
-  await client.destroy();
+  await client.destroy()
 }

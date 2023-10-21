@@ -1,3 +1,3 @@
 export interface IWaifuProvider {
-  getRandomWaifuImageOrGifUri(): Promise<string>;
+  getRandomWaifuImageOrGifUri(): Promise<string>
 }

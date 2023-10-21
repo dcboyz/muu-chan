@@ -1,10 +1,10 @@
 interface ISuggestionOptions {
-  limit: string;
+  limit: string
 }
 
 export interface IMyAnimeListOptions {
-  oauthRedirectUri: string;
-  clientId: string;
-  clientSecret: string;
-  suggestions: ISuggestionOptions;
+  oauthRedirectUri: string
+  clientId: string
+  clientSecret: string
+  suggestions: ISuggestionOptions
 }

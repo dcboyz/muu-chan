@@ -1,20 +1,20 @@
 export interface ISuggestionResponse {
-  data: ISuggestion[];
+  data: ISuggestion[]
 
-  paging: { next: string };
+  paging: { next: string }
 }
 
 interface ISuggestion {
-  node: Anime;
+  node: Anime
 }
 
 interface Anime {
-  id: number;
-  title: string;
-  main_picture: MainPicture;
+  id: number
+  title: string
+  main_picture: MainPicture
 }
 
 interface MainPicture {
-  medium: string;
-  large: string;
+  medium: string
+  large: string
 }
