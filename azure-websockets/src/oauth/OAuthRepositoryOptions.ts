@@ -2,7 +2,8 @@ import { Service } from "typedi";
 
 import { IOptionsMonitor } from "../configuration/IOptionsMonitor";
 
-import { IKnexConnectionProviderOptions } from "../data/IKnexConnectionProviderOptions";
+import { IKnexConnectionProviderOptions } from "../database/IKnexConnectionProviderOptions";
+
 import { IOAuthRepositoryOptions } from "./IOAuthRepositoryOptions";
 
 @Service("IOptionsMonitor<IOAuthRepositoryOptions>")

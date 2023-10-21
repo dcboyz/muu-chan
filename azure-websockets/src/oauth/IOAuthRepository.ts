@@ -1,4 +1,4 @@
-import { IOAuthKey, IOAuthRecord } from "./models/OAuthModel";
+import { IOAuthKey, IOAuthRecord } from "./IOAuthModel";
 
 export interface IOAuthRepository {
   upsertOAuth(key: IOAuthKey, auth: Partial<IOAuthRecord>): Promise<void>;

@@ -3,10 +3,9 @@ import { Inject, Service } from "typedi";
 
 import { IOptionsMonitor } from "../configuration/IOptionsMonitor";
 
-import { IKnexConnectionProvider } from "../data/IKnexConnectionProvider";
+import { IKnexConnectionProvider } from "../database/IKnexConnectionProvider";
 
-import { IOAuthKey, IOAuthModel, IOAuthRecord } from "./models/OAuthModel";
-
+import { IOAuthKey, IOAuthModel, IOAuthRecord } from "./IOAuthModel";
 import { IOAuthRepository } from "./IOAuthRepository";
 import { IOAuthRepositoryOptions } from "./IOAuthRepositoryOptions";
 
