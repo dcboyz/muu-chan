@@ -61,9 +61,7 @@ export class LeetcodeProvider {
 
     const page = await browser.newPage()
 
-    const chosenTag = tag ?? chooseRandom(LeetcodeProvider.tags)
-
-    const leetcodeUrl = `https://leetcode.com/tag/${chosenTag}/`
+    const leetcodeUrl = `https://leetcode.com/tag/${tag}/`
 
     await page.goto(leetcodeUrl)
 
