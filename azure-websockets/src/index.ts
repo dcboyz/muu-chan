@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 
-import express from 'express'
+import fastify from 'fastify'
 import dotenv from 'dotenv'
 import Container, { Inject, Service } from 'typedi'
 import { Events, Interaction } from 'discord.js'
@@ -10,6 +10,8 @@ dotenv.config()
 import { CommandContainer } from './discord/CommandContainer'
 import { DiscordProvider } from './discord/DiscordProvider'
 
+import { MyAnimeListRequestHandler } from './http/MyAnimeListRequestHandler'
+
 @Service()
 class Application {
   @Inject()
@@ -17,6 +19,11 @@ class Application {
 
   @Inject()
   private readonly discordProvider: DiscordProvider
+
+  @Inject()
+  private readonly myAnimeListRequestHandler: MyAnimeListRequestHandler
+
+  private readonly server = fastify()
 
   handleInteraction = async (interaction: Interaction) => {
     if (!interaction.isChatInputCommand()) return
@@ -35,21 +42,21 @@ class Application {
 
     await this.discordProvider.clientLogin()
   }
-}
 
-function fAzure() {
-  const server = express()
+  public async handleHttpRequests() {
+    // Answer to healthcheck ping from Azure
+    this.server.get('/', (_, res) => res.send())
 
-  // We need to create this otherwise Azure will kill our App Container...
-  server.get('/', (_, res) => res.send())
+    this.server.get('/maloauthcallback', this.myAnimeListRequestHandler.handleOAuthCallback)
 
-  server.listen(8080)
+    this.server.listen({ port: 80 })
+  }
 }
 
 void (async function main() {
-  fAzure()
-
   const application = Container.get(Application)
+
+  application.handleHttpRequests()
 
   await application.listenToCommands()
 })()
