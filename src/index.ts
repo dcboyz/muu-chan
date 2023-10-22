@@ -1,9 +1,14 @@
 import 'reflect-metadata'
-import dotenv from 'dotenv'
+
+import * as applicationInsights from 'applicationinsights'
+
+applicationInsights
+  .setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
+  .setDistributedTracingMode(applicationInsights.DistributedTracingModes.AI_AND_W3C)
+  .setSendLiveMetrics(true)
+  .start()
 
 import Container from 'typedi'
-
-// dotenv.config()
 
 import { Application } from './Application'
 
