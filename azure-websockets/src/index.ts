@@ -1,35 +1,40 @@
 import 'reflect-metadata'
 
-import dotenv from 'dotenv'
 import express from 'express'
-import { Client, Events, GatewayIntentBits, Interaction } from 'discord.js'
+import dotenv from 'dotenv'
+import Container, { Inject, Service } from 'typedi'
+import { Events, Interaction } from 'discord.js'
 
-// That's really only needed for local development
 dotenv.config()
 
-import { commandContainer } from './commands/command-container'
-import { registerCommands } from './commands/register-commands'
+import { CommandContainer } from './discord/CommandContainer'
+import { DiscordProvider } from './discord/DiscordProvider'
 
-async function handleInteraction(interaction: Interaction) {
-  if (!interaction.isChatInputCommand()) return
+@Service()
+class Application {
+  @Inject()
+  private readonly commandContainer: CommandContainer
 
-  const commandName = interaction.commandName
+  @Inject()
+  private readonly discordProvider: DiscordProvider
 
-  const executor = commandContainer.getExecutorForCommand(commandName)
+  handleInteraction = async (interaction: Interaction) => {
+    if (!interaction.isChatInputCommand()) return
 
-  await executor(interaction)
-}
+    const commandName = interaction.commandName
 
-async function listenToCommands() {
-  await registerCommands(commandContainer.getCommands())
+    const executor = this.commandContainer.getExecutorForCommand(commandName)
 
-  const discordWebsocket = new Client({ intents: [GatewayIntentBits.Guilds] })
+    await executor.execute(interaction)
+  }
 
-  discordWebsocket.on(Events.InteractionCreate, handleInteraction)
+  public async listenToCommands() {
+    await this.discordProvider.registerCommands(this.commandContainer.getCommands())
 
-  const token = process.env.DISCORD_BOT_TOKEN as string
+    this.discordProvider.wsClient.on(Events.InteractionCreate, this.handleInteraction)
 
-  discordWebsocket.login(token)
+    await this.discordProvider.clientLogin()
+  }
 }
 
 function fAzure() {
@@ -38,10 +43,13 @@ function fAzure() {
   // We need to create this otherwise Azure will kill our App Container...
   server.get('/', (_, res) => res.send())
 
-  server.listen(80)
+  server.listen(8080)
 }
 
 void (async function main() {
   fAzure()
-  await listenToCommands()
+
+  const application = Container.get(Application)
+
+  await application.listenToCommands()
 })()

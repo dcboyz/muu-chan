@@ -4,9 +4,11 @@ import { IOptionsMonitor } from '../configuration/IOptionsMonitor'
 
 import { IKnexConnectionProviderOptions } from '../database/IKnexConnectionProviderOptions'
 
-import { IOAuthRepositoryOptions } from './IOAuthRepositoryOptions'
+export interface IOAuthRepositoryOptions {
+  OAuthKnexConnectionOptions: IKnexConnectionProviderOptions
+}
 
-@Service('IOptionsMonitor<IOAuthRepositoryOptions>')
+@Service()
 export class OAuthRepositoryOptions implements IOptionsMonitor<IOAuthRepositoryOptions> {
   public currentValue(): IOAuthRepositoryOptions {
     const client = process.env.DATABASE_CLIENT as string

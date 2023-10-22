@@ -1,11 +1,10 @@
 import knex from 'knex'
 import { Service } from 'typedi'
 
-import { IKnexConnectionProvider } from './IKnexConnectionProvider'
 import { IKnexConnectionProviderOptions } from './IKnexConnectionProviderOptions'
 
-@Service('IKnexConnectionProvider')
-export class KnexConnectionProvider<TTable extends {}> implements IKnexConnectionProvider<TTable> {
+@Service()
+export class KnexConnectionProvider<TTable extends {}> {
   public createDatabaseConnection(options: IKnexConnectionProviderOptions) {
     const knexConfiguration: knex.Knex.Config = {
       client: options.client,

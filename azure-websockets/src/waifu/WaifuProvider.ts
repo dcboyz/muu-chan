@@ -2,10 +2,8 @@ import { Service } from 'typedi'
 
 import { chooseRandom } from '../common/arrays'
 
-import { IWaifuProvider } from './IWaifuProvider'
-
-@Service('IWaifuProvider')
-export class WaifuProvider implements IWaifuProvider {
+@Service()
+export class WaifuProvider {
   private static readonly baseUri = 'https://api.waifu.pics/sfw/'
 
   private static readonly categories = [

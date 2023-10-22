@@ -1,8 +1,17 @@
 import { Service } from 'typedi'
-import { IOptionsMonitor } from '../configuration/IOptionsMonitor'
-import { IMyAnimeListOptions } from './IMyAnimeListOptions'
 
-@Service('IOptionsMonitor<IMyAnimeListOptions>')
+import { IOptionsMonitor } from '../configuration/IOptionsMonitor'
+
+export interface IMyAnimeListOptions {
+  oauthRedirectUri: string
+  clientId: string
+  clientSecret: string
+  suggestions: {
+    limit: string
+  }
+}
+
+@Service()
 export class MyAnimeListOptions implements IOptionsMonitor<IMyAnimeListOptions> {
   public currentValue() {
     const oauthRedirectUri = process.env.MAL_OAUTH_REDIRECT_URI as string

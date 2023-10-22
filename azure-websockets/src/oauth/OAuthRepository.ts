@@ -1,21 +1,19 @@
 import knex from 'knex'
 import { Inject, Service } from 'typedi'
 
-import { IOptionsMonitor } from '../configuration/IOptionsMonitor'
-
-import { IKnexConnectionProvider } from '../database/IKnexConnectionProvider'
+import { KnexConnectionProvider } from '../database/KnexConnectionProvider'
 
 import { IOAuthKey, IOAuthModel, IOAuthRecord } from './IOAuthModel'
-import { IOAuthRepository } from './IOAuthRepository'
-import { IOAuthRepositoryOptions } from './IOAuthRepositoryOptions'
 
-@Service('IOAuthRepository')
-export class OAuthRepository implements IOAuthRepository {
-  @Inject('IOptionsMonitor<IOAuthRepositoryOptions>')
-  private readonly oAuthRepositoryOptionsMonitor: IOptionsMonitor<IOAuthRepositoryOptions>
+import { OAuthRepositoryOptions } from './OAuthRepositoryOptions'
 
-  @Inject('IKnexConnectionProvider')
-  private readonly knexConnectionProvider: IKnexConnectionProvider<IOAuthModel>
+@Service()
+export class OAuthRepository {
+  @Inject()
+  private readonly oAuthRepositoryOptionsMonitor: OAuthRepositoryOptions
+
+  @Inject()
+  private readonly knexConnectionProvider: KnexConnectionProvider<IOAuthModel>
 
   private _connection: () => knex.Knex.QueryBuilder<IOAuthModel>
 
@@ -43,7 +41,7 @@ export class OAuthRepository implements IOAuthRepository {
   }
 
   public async getOAuth(key: IOAuthKey) {
-    const oauth = await this.connection.select<IOAuthRecord>().where(key)
+    const oauth = await this.connection.select<IOAuthRecord>().where(key).first()
 
     return oauth
   }

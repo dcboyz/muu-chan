@@ -1,22 +1,20 @@
 import { escape } from 'querystring'
 import { Inject, Service } from 'typedi'
 
-import { IOptionsMonitor } from '../configuration/IOptionsMonitor'
-
-import { IMyAnimeListOptions } from './IMyAnimeListOptions'
 import { IAuthenticationPrincipal } from './IAuthenticationPrincipal'
 import { ITokenPrincipal } from './ITokenPrincipal'
 import { ISuggestionResponse } from './ISuggestionResponse'
+import { MyAnimeListOptions } from './MyAnimeListOptions'
 
-@Service('IMyAnimeListProvider')
+@Service()
 export class MyAnimeListProvider {
   private static readonly v1BaseUri = 'https://myanimelist.net/v1'
-  private static readonly v2BaseUri = 'https://myanimelist.net/v2'
+  private static readonly v2BaseUri = 'https://api.myanimelist.net/v2'
   private static readonly tokenBaseUri = MyAnimeListProvider.v1BaseUri + '/oauth2/token'
   private static readonly suggestionsBaseUri = MyAnimeListProvider.v2BaseUri + '/anime/suggestions'
 
-  @Inject('IOptionsMonitor<IMyAnimeListOptions>')
-  private readonly optionsMonitor: IOptionsMonitor<IMyAnimeListOptions>
+  @Inject()
+  private readonly optionsMonitor: MyAnimeListOptions
 
   public getAskForUserPermissionsUri(state: string, codeChallenge: string) {
     const options = this.optionsMonitor.currentValue()
