@@ -57,7 +57,7 @@ export class Application {
 
     this.server.get('/maloauthcallback', this.myAnimeListRequestHandler.handleOAuthCallback)
 
-    this.server.listen({ port: options.httpPort }, (err, addr) => {
+    this.server.listen({ port: options.httpPort, host: '0.0.0.0' }, (err, addr) => {
       if (err) {
         console.error(err)
       }
