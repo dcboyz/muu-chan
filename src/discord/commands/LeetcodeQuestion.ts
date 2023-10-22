@@ -42,17 +42,17 @@ export class LeetcodeQuestionCommand implements ICommand {
 
     const tag = interaction.options.getString('tag')
 
+    const chosenTag = tag ?? chooseRandom(LeetcodeProvider.tags)
+
     // We can start including hards later
     // const includeHards = interaction.options.GetBoolean('hards') ?? false
-    const questions = await this.leetcodeProvider.getEasyOrMediumLeetcodeQuestions(
-      tag ?? chooseRandom(LeetcodeProvider.tags),
-    )
+    const questions = await this.leetcodeProvider.getEasyOrMediumLeetcodeQuestions(chosenTag)
 
     const question = chooseRandom(questions!)
 
     const background = await this.waifuProvider.getRandomWaifuImageOrGifUri()
 
-    const description = `Got question **${question.title}**!\n\nCategory: ${tag}`
+    const description = `Got question **${question.title}**!\n\nCategory: ${chosenTag}`
 
     const embed = createEmbed({ title: question.title, link: question.href, backgroundUri: background, description })
 
