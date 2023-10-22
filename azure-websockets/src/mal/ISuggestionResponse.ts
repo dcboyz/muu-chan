@@ -12,6 +12,9 @@ interface Anime {
   id: number
   title: string
   main_picture: MainPicture
+  synopsis: string
+  mean: number
+  num_episodes: number
 }
 
 interface MainPicture {

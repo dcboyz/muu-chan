@@ -1,5 +1,5 @@
 import { Inject, Service } from 'typedi'
-import { Interaction, SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from 'discord.js'
+import { CacheType, ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandStringOption } from 'discord.js'
 
 import { createEmbed } from '../../common/discord'
 import { chooseRandom } from '../../common/arrays'
@@ -9,7 +9,6 @@ import { LeetcodeProvider } from '../../leetcode/LeetcodeProvider'
 import { WaifuProvider } from '../../waifu/WaifuProvider'
 
 import { ICommand } from './ICommand'
-import { IInteraction } from './IInteraction'
 
 @Service()
 export class LeetcodeQuestionCommand implements ICommand {
@@ -36,14 +35,12 @@ export class LeetcodeQuestionCommand implements ICommand {
     return command
   }
 
-  public async execute(interaction: Interaction): Promise<void> {
-    const actualInteraction = interaction as IInteraction
-
+  public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
     // Discord.js has a timeout of 3s, crawling is slow,
     // so we defer the response and edit it later
-    await actualInteraction.deferReply()
+    await interaction.deferReply()
 
-    const tag = actualInteraction.options.getString('tag')
+    const tag = interaction.options.getString('tag')
 
     // We can start including hards later
     // const includeHards = interaction.options.GetBoolean('hards') ?? false
@@ -57,6 +54,6 @@ export class LeetcodeQuestionCommand implements ICommand {
 
     const embed = createEmbed({ title: question.title, link: question.href, backgroundUri: background, description })
 
-    await actualInteraction.editReply({ embeds: [embed] })
+    await interaction.editReply({ embeds: [embed] })
   }
 }

@@ -4,7 +4,7 @@ import fastify from 'fastify'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
 import Container, { Inject, Service } from 'typedi'
-import { Events, Interaction } from 'discord.js'
+import { CacheType, Events, Interaction } from 'discord.js'
 
 dotenv.config()
 
@@ -31,7 +31,7 @@ class Application {
 
   private readonly server = fastify()
 
-  handleInteraction = async (interaction: Interaction) => {
+  handleInteraction = async (interaction: Interaction<CacheType>) => {
     if (!interaction.isChatInputCommand()) return
 
     const commandName = interaction.commandName
@@ -46,6 +46,10 @@ class Application {
 
     this.discordProvider.wsClient.on(Events.InteractionCreate, this.handleInteraction)
 
+    this.discordProvider.wsClient.on(Events.MessageReactionAdd, async (reaction, user) => {
+      console.log(reaction)
+    })
+
     await this.discordProvider.clientLogin()
   }
 
@@ -55,7 +59,7 @@ class Application {
 
     this.server.get('/maloauthcallback', this.myAnimeListRequestHandler.handleOAuthCallback)
 
-    this.server.listen({ port: 80 })
+    this.server.listen({ port: 4000 })
   }
 
   public async handleCron() {

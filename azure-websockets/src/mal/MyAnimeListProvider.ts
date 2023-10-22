@@ -6,12 +6,18 @@ import { ITokenPrincipal } from './ITokenPrincipal'
 import { ISuggestionResponse } from './ISuggestionResponse'
 import { MyAnimeListOptions } from './MyAnimeListOptions'
 
+interface IAnime {}
+
 @Service()
 export class MyAnimeListProvider {
   private static readonly v1BaseUri = 'https://myanimelist.net/v1'
+
   private static readonly v2BaseUri = 'https://api.myanimelist.net/v2'
-  private static readonly tokenBaseUri = MyAnimeListProvider.v1BaseUri + '/oauth2/token'
-  private static readonly suggestionsBaseUri = MyAnimeListProvider.v2BaseUri + '/anime/suggestions'
+
+  private static readonly tokenUri = MyAnimeListProvider.v1BaseUri + '/oauth2/token'
+
+  private static readonly suggestionsUri =
+    MyAnimeListProvider.v2BaseUri + '/anime/suggestions?limit=1&fields=title,main_picture,synopsis,mean,num_episodes'
 
   @Inject()
   private readonly optionsMonitor: MyAnimeListOptions
@@ -44,7 +50,7 @@ export class MyAnimeListProvider {
 
     const requestOptions = { method: 'POST', headers: headers, body: body }
 
-    const response = await fetch(MyAnimeListProvider.tokenBaseUri, requestOptions)
+    const response = await fetch(MyAnimeListProvider.tokenUri, requestOptions)
 
     const tokenPrincipal: ITokenPrincipal = await response.json()
 
@@ -77,7 +83,7 @@ export class MyAnimeListProvider {
 
     const requestOptions = { method: 'POST', headers: headers, body: body }
 
-    const response = await fetch(MyAnimeListProvider.tokenBaseUri, requestOptions)
+    const response = await fetch(MyAnimeListProvider.tokenUri, requestOptions)
 
     const tokenPrincipal: ITokenPrincipal = await response.json()
 
@@ -95,14 +101,16 @@ export class MyAnimeListProvider {
     return authenticationPrincipal
   }
 
-  public async getListBasedSuggestions(token: string) {
-    const options = this.optionsMonitor.currentValue()
-
-    const uri = MyAnimeListProvider.suggestionsBaseUri + '?limit=' + options.suggestions.limit
-
+  public async getListBasedSuggestions(token: string, offset: number | undefined | null = null) {
     const headers = { Authorization: `Bearer ${token}` }
 
     const requestOptions = { method: 'GET', headers: headers }
+
+    let uri = MyAnimeListProvider.suggestionsUri
+
+    if (offset) {
+      uri + `&offset=${offset}`
+    }
 
     const response = await fetch(uri, requestOptions)
 

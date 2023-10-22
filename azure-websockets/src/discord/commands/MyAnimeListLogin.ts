@@ -1,5 +1,5 @@
 import { Inject, Service } from 'typedi'
-import { Interaction, SlashCommandBuilder, SlashCommandSubcommandBuilder } from 'discord.js'
+import { CacheType, ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js'
 
 import { createEmbed } from '../../common/discord'
 import { generateSafeToken } from '../../common/crypto'
@@ -12,7 +12,6 @@ import { OAuthRepository } from '../../oauth/OAuthRepository'
 import { WaifuProvider } from '../../waifu/WaifuProvider'
 
 import { ICommand } from './ICommand'
-import { IInteraction } from './IInteraction'
 
 @Service()
 export class MyAnimeListLoginCommand implements ICommand {
@@ -34,11 +33,9 @@ export class MyAnimeListLoginCommand implements ICommand {
     return command
   }
 
-  public async execute(interaction: Interaction): Promise<void> {
-    const actualInteraction = interaction as IInteraction
-
+  public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
     // Discord.js has a timeout of 3s so we defer the response and edit it later
-    await actualInteraction.deferReply()
+    await interaction.deferReply()
 
     const userId = interaction.user.id
 
@@ -69,6 +66,6 @@ export class MyAnimeListLoginCommand implements ICommand {
       description: description,
     })
 
-    await actualInteraction.editReply({ embeds: [embed] })
+    await interaction.editReply({ embeds: [embed] })
   }
 }

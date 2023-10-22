@@ -1,5 +1,5 @@
 import { Service, Inject } from 'typedi'
-import { SlashCommandSubcommandBuilder, Interaction, EmbedBuilder, SlashCommandBuilder } from 'discord.js'
+import { EmbedBuilder, SlashCommandBuilder, CacheType, ChatInputCommandInteraction } from 'discord.js'
 
 import { createEmbed } from '../../common/discord'
 
@@ -9,7 +9,6 @@ import { IAuthenticationPrincipal } from '../../mal/IAuthenticationPrincipal'
 import { OAuthRepository } from '../../oauth/OAuthRepository'
 
 import { ICommand } from './ICommand'
-import { IInteraction } from './IInteraction'
 
 @Service()
 export class MyAnimeListSuggestionCommand implements ICommand {
@@ -23,16 +22,14 @@ export class MyAnimeListSuggestionCommand implements ICommand {
     let command = new SlashCommandBuilder()
 
     command = command.setName('myanimelist-suggestion')
-    command = command.setDescription('Grant permissions to read your list in MyAnimeList!')
+    command = command.setDescription('Get an anime suggestion based in your MyAnimeList!')
 
     return command
   }
 
-  public async execute(interaction: Interaction): Promise<void> {
-    const actualInteraction = interaction as IInteraction
-
+  public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
     // Discord.js has a timeout of 3s so we defer the response and edit it later
-    await actualInteraction.deferReply()
+    await interaction.deferReply()
 
     const userId = interaction.user.id
 
@@ -43,7 +40,7 @@ export class MyAnimeListSuggestionCommand implements ICommand {
     const notAuthenticated = !authPrincipal || !authPrincipal.token || !authPrincipal.refresh_token
 
     if (notAuthenticated) {
-      await actualInteraction.editReply(
+      await interaction.editReply(
         'You have not grant permissions to read your list. Please log in again to MyAnimeList!',
       )
       return
@@ -58,7 +55,7 @@ export class MyAnimeListSuggestionCommand implements ICommand {
       const refreshTokenExpired = new Date(authPrincipal.refresh_token_valid_until) < now
 
       if (refreshTokenExpired) {
-        await actualInteraction.editReply('Your authentication expired. Please log in again to MyAnimeList!')
+        await interaction.editReply('Your authentication expired. Please log in again to MyAnimeList!')
         return
       }
 
@@ -73,15 +70,24 @@ export class MyAnimeListSuggestionCommand implements ICommand {
 
     for (const { node } of suggestions.data) {
       const title = node.title
-      const description = `Muu-chan thinks that you'd like ${node.title} based on your list!`
       const link = `https://myanimelist.net/anime/${node.id}`
       const background = node.main_picture.large
+
+      const description = `
+      ${node.synopsis}
+
+      **Rating**: ${node.mean}
+
+      **Number of episodes**: ${node.num_episodes}
+      `
 
       const embed = createEmbed({ title, link, description, backgroundUri: background })
 
       embeds.push(embed)
 
-      await actualInteraction.editReply({ embeds })
+      const message = await interaction.editReply({ options: { fetchReply: true }, embeds })
+
+      await message.react('🔜')
     }
   }
 }

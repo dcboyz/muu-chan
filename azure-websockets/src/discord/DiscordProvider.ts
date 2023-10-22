@@ -2,14 +2,14 @@ import {
   Client,
   EmbedBuilder,
   GatewayIntentBits,
+  Partials,
   REST,
   Routes,
   SlashCommandBuilder,
-  SlashCommandSubcommandsOnlyBuilder,
+  TextChannel,
 } from 'discord.js'
 import { Inject, Service } from 'typedi'
 
-import { IChannel } from './IChannel'
 import { DiscordProviderOptions } from './DiscordProviderOptions'
 
 @Service()
@@ -34,7 +34,10 @@ export class DiscordProvider {
 
   public get wsClient() {
     if (!this._wsClient) {
-      this._wsClient = new Client({ intents: [GatewayIntentBits.Guilds] })
+      this._wsClient = new Client({
+        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
+        partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+      })
     }
 
     return this._wsClient
@@ -79,10 +82,12 @@ export class DiscordProvider {
       for (const [channelId, channel] of channels) {
         if (seen.has(channelId)) continue
 
-        const actualChannel = channel as IChannel
+        if (channel.isTextBased()) {
+          const textChannel = channel as TextChannel
 
-        if (actualChannel.isTextBased() && actualChannel.name == name) {
-          yield actualChannel
+          if (textChannel.name == name) {
+            yield channel
+          }
         }
 
         seen.add(channelId)
