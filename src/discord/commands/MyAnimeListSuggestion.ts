@@ -40,29 +40,24 @@ export class MyAnimeListSuggestionCommand implements ICommand {
     const notAuthenticated = !authPrincipal || !authPrincipal.token || !authPrincipal.refreshToken
 
     if (notAuthenticated) {
-      await interaction.editReply(
-        'You have not grant permissions to read your list. Please log in again to MyAnimeList!',
-      )
+      await interaction.editReply('You have not grant permissions to read your list. Please log in to MyAnimeList!')
       return
     }
 
-    const now = new Date()
+    let token: string
 
-    const tokenExpired = new Date(authPrincipal.tokenValidUntil) < now
+    if (!this.isTokenExpired(authPrincipal)) {
+      token = authPrincipal.token
+    } else if (this.isPrincipalRefreshable(authPrincipal)) {
+      const refreshedPrincipal = await this.myAnimeListProvider.refreshAuthenticationPrincipal(authPrincipal.refreshToken)
 
-    let refreshedPrincipal: IAuthenticationPrincipal | undefined
-    if (tokenExpired) {
-      const refreshTokenExpired = new Date(authPrincipal.refreshTokenValidUntil) < now
+      token = refreshedPrincipal.token
 
-      if (refreshTokenExpired) {
-        await interaction.editReply('Your authentication expired. Please log in again to MyAnimeList!')
-        return
-      }
-
-      refreshedPrincipal = await this.myAnimeListProvider.refreshAuthenticationPrincipal(authPrincipal.refreshToken)
+      await this.oauthRepository.upsertOAuth({ id: userId, partitionKey: guildId }, refreshedPrincipal)
+    } else {
+      await interaction.editReply('Your authentication expired. Please log in again to MyAnimeList!')
+      return
     }
-
-    const token = refreshedPrincipal ? refreshedPrincipal.token : authPrincipal.token
 
     const suggestions = await this.myAnimeListProvider.getListBasedSuggestions(token)
 
@@ -89,5 +84,21 @@ export class MyAnimeListSuggestionCommand implements ICommand {
 
       await message.react('🔜')
     }
+  }
+
+  private isTokenExpired(authenticationPrincipal: IAuthenticationPrincipal) {
+    const now = new Date()
+
+    const tokenExpired = new Date(authenticationPrincipal.tokenValidUntil) < now
+
+    return tokenExpired
+  }
+
+  private isPrincipalRefreshable(authenticationPrincipal: IAuthenticationPrincipal) {
+    const now = new Date()
+
+    const refreshTokenExpired = new Date(authenticationPrincipal.refreshTokenValidUntil) < now
+
+    return refreshTokenExpired
   }
 }
