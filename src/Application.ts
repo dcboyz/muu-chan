@@ -53,13 +53,15 @@ export class Application {
     const options = this.applicationOptions.currentValue()
 
     // Answer to healthcheck ping from Azure
-    this.server.get('/', (_, res) => res.send())
+    this.server.get('/', (_, res) => res.status(200).send({ pong: true }))
 
     this.server.get('/maloauthcallback', this.myAnimeListRequestHandler.handleOAuthCallback)
 
-    console.log('HTTP listening on: ' + options.httpPort)
-
     this.server.listen({ port: options.httpPort }, (err, addr) => {
+      if (err) {
+        console.error(err)
+      }
+
       console.log('HTTP Listening on: ' + addr)
     })
   }

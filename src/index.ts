@@ -1,8 +1,8 @@
 import 'reflect-metadata'
+import dotenv from 'dotenv'
 
 import Container from 'typedi'
 
-// Enable for local development
 // dotenv.config()
 
 import { Application } from './Application'
