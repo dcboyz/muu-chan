@@ -3,13 +3,42 @@ import puppeteer, { ConnectOptions } from 'puppeteer'
 
 import { IQuestion } from './IQuestion'
 import { LeetcodeProviderOptions } from './LeetcodeProviderOptions'
+import { chooseRandom } from '../common/arrays'
 
 @Service()
 export class LeetcodeProvider {
   @Inject()
   private readonly optionsMonitor: LeetcodeProviderOptions
 
-  public async getEasyOrMediumLeetcodeQuestions(tag: string) {
+  public static readonly tags = [
+    'array',
+    'string',
+    'hash-table',
+    'sorting',
+    'greedy',
+    'depth-first-search',
+    'binary-search',
+    'breadth-first-search',
+    'tree',
+    'matrix',
+    'two-pointers',
+    'binary-tree',
+    'heap-priority-queue',
+    'stack',
+    'prefix-sum',
+    'graph',
+    'backtracking',
+    'sliding-window',
+    'linked-list',
+    'trie',
+    'divide-and-conquer',
+    'queue',
+    'binary-search-tree',
+    'quickselect',
+    'bucket-sort',
+  ]
+
+  public async getEasyOrMediumLeetcodeQuestions(tag: string | null | undefined) {
     const options = this.optionsMonitor.currentValue()
 
     const connectOptions: ConnectOptions = {
@@ -20,7 +49,9 @@ export class LeetcodeProvider {
 
     const page = await browser.newPage()
 
-    const leetcodeUrl = `https://leetcode.com/tag/${tag}/`
+    const chosenTag = tag ?? chooseRandom(LeetcodeProvider.tags)
+
+    const leetcodeUrl = `https://leetcode.com/tag/${chosenTag}/`
 
     await page.goto(leetcodeUrl)
 

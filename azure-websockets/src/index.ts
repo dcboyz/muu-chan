@@ -1,11 +1,14 @@
 import 'reflect-metadata'
 
 import fastify from 'fastify'
+import cron from 'node-cron'
 import dotenv from 'dotenv'
 import Container, { Inject, Service } from 'typedi'
 import { Events, Interaction } from 'discord.js'
 
 dotenv.config()
+
+import { LeetcodeCronHandler } from './cron/LeetcodeCronHandler'
 
 import { CommandContainer } from './discord/CommandContainer'
 import { DiscordProvider } from './discord/DiscordProvider'
@@ -22,6 +25,9 @@ class Application {
 
   @Inject()
   private readonly myAnimeListRequestHandler: MyAnimeListRequestHandler
+
+  @Inject()
+  private readonly leetcodeCronHandler: LeetcodeCronHandler
 
   private readonly server = fastify()
 
@@ -51,12 +57,18 @@ class Application {
 
     this.server.listen({ port: 80 })
   }
+
+  public async handleCron() {
+    cron.schedule('30 17 * * *', this.leetcodeCronHandler.getRandomLeetcodeQuestion)
+  }
 }
 
 void (async function main() {
   const application = Container.get(Application)
 
   application.handleHttpRequests()
+
+  application.handleCron()
 
   await application.listenToCommands()
 })()

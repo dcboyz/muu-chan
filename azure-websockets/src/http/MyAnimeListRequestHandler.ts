@@ -8,7 +8,7 @@ import { IOAuthKey } from '../oauth/IOAuthModel'
 
 import { successOAuthResponseHTML } from './templates/SuccessOAuthResponseHTML'
 
-import { IOAuthState } from './IOAuthState'
+import { IMyAnimeListOAuthState } from './IMyAnimeListOAuthState'
 
 @Service()
 export class MyAnimeListRequestHandler {
@@ -24,7 +24,7 @@ export class MyAnimeListRequestHandler {
     const code = query['code']
     const state = query['state']
 
-    const { user, guild }: IOAuthState = JSON.parse(state)
+    const { user, guild }: IMyAnimeListOAuthState = JSON.parse(state)
 
     const authKey: IOAuthKey = { user_id: user, guild_id: guild }
 
