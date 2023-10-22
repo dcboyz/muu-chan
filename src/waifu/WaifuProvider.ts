@@ -6,7 +6,7 @@ import { CacheProvider } from '../cache/CacheProvider'
 
 @Service()
 export class WaifuProvider {
-  private static readonly baseUri = 'https://api.waifu.pics/sfw/'
+  private static readonly baseUri = 'https://api.waifu.pics/many/sfw/'
 
   private static readonly categories = [
     'waifu',
@@ -30,6 +30,9 @@ export class WaifuProvider {
     'cringe',
   ]
 
+  // For some reason in the universe, the waifu api requires a body without content...
+  private static readonly body = JSON.stringify({})
+
   @Inject()
   private readonly cacheProvider: CacheProvider
 
@@ -46,7 +49,11 @@ export class WaifuProvider {
       return url
     }
 
-    const response = await fetch(WaifuProvider.baseUri + category, { method: 'POST' })
+    const headers = { 'Content-Type': 'application/json' }
+
+    const requestOptions = { method: 'POST', body: WaifuProvider.body, headers: headers }
+
+    const response = await fetch(WaifuProvider.baseUri + category, requestOptions)
 
     const { files } = await response.json()
 
