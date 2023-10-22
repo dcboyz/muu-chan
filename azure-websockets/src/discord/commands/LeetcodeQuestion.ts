@@ -44,7 +44,9 @@ export class LeetcodeQuestionCommand implements ICommand {
 
     // We can start including hards later
     // const includeHards = interaction.options.GetBoolean('hards') ?? false
-    const questions = await this.leetcodeProvider.getEasyOrMediumLeetcodeQuestions(tag)
+    const questions = await this.leetcodeProvider.getEasyOrMediumLeetcodeQuestions(
+      tag ?? chooseRandom(LeetcodeProvider.tags),
+    )
 
     const question = chooseRandom(questions!)
 

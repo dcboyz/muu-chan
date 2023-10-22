@@ -1,14 +1,20 @@
 import { Inject, Service } from 'typedi'
 import puppeteer, { ConnectOptions } from 'puppeteer'
 
+import { chooseRandom } from '../common/arrays'
+
+import { CacheProvider } from '../cache/CacheProvider'
+
 import { IQuestion } from './IQuestion'
 import { LeetcodeProviderOptions } from './LeetcodeProviderOptions'
-import { chooseRandom } from '../common/arrays'
 
 @Service()
 export class LeetcodeProvider {
   @Inject()
   private readonly optionsMonitor: LeetcodeProviderOptions
+
+  @Inject()
+  private readonly cacheProvider: CacheProvider
 
   public static readonly tags = [
     'array',
@@ -38,7 +44,13 @@ export class LeetcodeProvider {
     'bucket-sort',
   ]
 
-  public async getEasyOrMediumLeetcodeQuestions(tag: string | null | undefined) {
+  public async getEasyOrMediumLeetcodeQuestions(tag: string) {
+    const cached = await this.cacheProvider.get<IQuestion[]>(tag)
+
+    if (cached) {
+      return cached
+    }
+
     const options = this.optionsMonitor.currentValue()
 
     const connectOptions: ConnectOptions = {
@@ -88,6 +100,10 @@ export class LeetcodeProvider {
     })
 
     await browser.close()
+
+    if (questions) {
+      await this.cacheProvider.set<IQuestion[]>(tag, questions, 604800)
+    }
 
     return questions
   }

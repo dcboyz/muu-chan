@@ -19,6 +19,7 @@
     "knex": "^3.0.1",
     "node-cron": "^3.0.2",
     "puppeteer": "^21.3.8",
+    "redis": "^4.6.10",
     "reflect-metadata": "^0.1.13",
     "tedious": "^16.4.1",
     "typedi": "^0.10.0"
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@types/knex": "^0.16.1",
     "@types/node-cron": "^3.0.10",
+    "@types/redis": "^4.0.11",
     "@types/reflect-metadata": "^0.1.0",
     "@types/tedious": "^4.0.12",
     "prettier": "^3.0.3",
