@@ -1,6 +1,8 @@
-import { Service } from 'typedi'
+import { Inject, Service } from 'typedi'
 
 import { chooseRandom } from '../common/arrays'
+
+import { CacheProvider } from '../cache/CacheProvider'
 
 @Service()
 export class WaifuProvider {
@@ -28,12 +30,31 @@ export class WaifuProvider {
     'cringe',
   ]
 
+  @Inject()
+  private readonly cacheProvider: CacheProvider
+
   public async getRandomWaifuImageOrGifUri(): Promise<string> {
     const category = chooseRandom(WaifuProvider.categories)
 
-    const response = await fetch(WaifuProvider.baseUri + category)
+    const cacheKey = 'waifu:' + category
 
-    const { url } = await response.json()
+    const cached = await this.cacheProvider.get<string[]>(cacheKey)
+
+    if (cached) {
+      const url = chooseRandom(cached)
+
+      return url
+    }
+
+    const response = await fetch(WaifuProvider.baseUri + category, { method: 'POST' })
+
+    const { files } = await response.json()
+
+    const urls = files as string[]
+
+    await this.cacheProvider.set<string[]>(cacheKey, urls, 86400)
+
+    const url = chooseRandom(urls)
 
     return url
   }

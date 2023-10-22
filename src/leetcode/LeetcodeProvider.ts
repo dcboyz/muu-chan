@@ -45,7 +45,9 @@ export class LeetcodeProvider {
   ]
 
   public async getEasyOrMediumLeetcodeQuestions(tag: string) {
-    const cached = await this.cacheProvider.get<IQuestion[]>(tag)
+    const cacheKey = 'leetcode:' + tag
+
+    const cached = await this.cacheProvider.get<IQuestion[]>(cacheKey)
 
     if (cached) {
       return cached
@@ -100,7 +102,7 @@ export class LeetcodeProvider {
     await browser.close()
 
     if (questions) {
-      await this.cacheProvider.set<IQuestion[]>(tag, questions, 604800)
+      await this.cacheProvider.set<IQuestion[]>(cacheKey, questions, 604800)
     }
 
     return questions
