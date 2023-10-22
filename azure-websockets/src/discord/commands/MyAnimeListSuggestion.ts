@@ -35,9 +35,9 @@ export class MyAnimeListSuggestionCommand implements ICommand {
 
     const guildId = interaction.guildId as string
 
-    const authPrincipal = await this.oauthRepository.getOAuth({ user_id: userId, guild_id: guildId })
+    const authPrincipal = await this.oauthRepository.getOAuth({ id: userId, partitionKey: guildId })
 
-    const notAuthenticated = !authPrincipal || !authPrincipal.token || !authPrincipal.refresh_token
+    const notAuthenticated = !authPrincipal || !authPrincipal.token || !authPrincipal.refreshToken
 
     if (notAuthenticated) {
       await interaction.editReply(
@@ -48,18 +48,18 @@ export class MyAnimeListSuggestionCommand implements ICommand {
 
     const now = new Date()
 
-    const tokenExpired = new Date(authPrincipal.token_valid_until) < now
+    const tokenExpired = new Date(authPrincipal.tokenValidUntil) < now
 
     let refreshedPrincipal: IAuthenticationPrincipal | undefined
     if (tokenExpired) {
-      const refreshTokenExpired = new Date(authPrincipal.refresh_token_valid_until) < now
+      const refreshTokenExpired = new Date(authPrincipal.refreshTokenValidUntil) < now
 
       if (refreshTokenExpired) {
         await interaction.editReply('Your authentication expired. Please log in again to MyAnimeList!')
         return
       }
 
-      refreshedPrincipal = await this.myAnimeListProvider.refreshAuthenticationPrincipal(authPrincipal.refresh_token)
+      refreshedPrincipal = await this.myAnimeListProvider.refreshAuthenticationPrincipal(authPrincipal.refreshToken)
     }
 
     const token = refreshedPrincipal ? refreshedPrincipal.token : authPrincipal.token

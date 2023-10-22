@@ -47,9 +47,9 @@ export class MyAnimeListLoginCommand implements ICommand {
 
     const codeChallenge = generateSafeToken()
 
-    const oauthKey: IOAuthKey = { user_id: userId, guild_id: guildId }
+    const oauthKey: IOAuthKey = { id: userId, partitionKey: guildId }
 
-    await this.oauthRepository.upsertOAuth(oauthKey, { oauth_verifier: codeChallenge })
+    await this.oauthRepository.upsertOAuth(oauthKey, { oauthVerifier: codeChallenge })
 
     const askForPermissionsUri = this.myAnimeListProvider.getAskForUserPermissionsUri(stateSerialized, codeChallenge)
 

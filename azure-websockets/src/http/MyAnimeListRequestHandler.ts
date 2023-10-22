@@ -26,18 +26,18 @@ export class MyAnimeListRequestHandler {
 
     const { user, guild }: IMyAnimeListOAuthState = JSON.parse(state)
 
-    const authKey: IOAuthKey = { user_id: user, guild_id: guild }
+    const authKey: IOAuthKey = { id: user, partitionKey: guild }
 
     const authRecord = await this.oauthRepository.getOAuth(authKey)
 
-    const authPrincipal = await this.myAnimeListProvider.getAuthenticationPrincipal(code, authRecord!.oauth_verifier)
+    const authPrincipal = await this.myAnimeListProvider.getAuthenticationPrincipal(code, authRecord!.oauthVerifier)
 
     await this.oauthRepository.upsertOAuth(authKey, {
-      oauth_code: code,
+      oauthCode: code,
       token: authPrincipal.token,
-      refresh_token: authPrincipal.refreshToken,
-      token_valid_until: authPrincipal.tokenValidUntil,
-      refresh_token_valid_until: authPrincipal.refreshTokenValidUntil,
+      refreshToken: authPrincipal.refreshToken,
+      tokenValidUntil: authPrincipal.tokenValidUntil,
+      refreshTokenValidUntil: authPrincipal.refreshTokenValidUntil,
     })
 
     response.type('text/html').send(successOAuthResponseHTML)
