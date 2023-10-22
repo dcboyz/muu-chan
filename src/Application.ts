@@ -57,7 +57,11 @@ export class Application {
 
     this.server.get('/maloauthcallback', this.myAnimeListRequestHandler.handleOAuthCallback)
 
-    this.server.listen({ port: options.httpPort })
+    console.log('HTTP listening on: ' + options.httpPort)
+
+    this.server.listen({ port: options.httpPort }, (err, addr) => {
+      console.log('HTTP Listening on: ' + addr)
+    })
   }
 
   public async handleCron() {
