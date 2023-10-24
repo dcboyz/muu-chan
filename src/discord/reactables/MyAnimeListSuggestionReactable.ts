@@ -1,5 +1,5 @@
 import { Service, Inject } from 'typedi'
-import { EmbedBuilder, SlashCommandBuilder, CacheType, ChatInputCommandInteraction } from 'discord.js'
+import { EmbedBuilder, MessageReaction, PartialMessageReaction } from 'discord.js'
 
 import { createEmbed } from '../../common/discord'
 
@@ -10,10 +10,8 @@ import { OAuthRepository } from '../../oauth/OAuthRepository'
 
 import { ReactableRepository } from '../../reactables/ReactableRepository'
 
-import { ICommand } from './ICommand'
-
 @Service()
-export class MyAnimeListSuggestionCommand implements ICommand {
+export class MyAnimeListSuggestionReactable {
   @Inject()
   private readonly oauthRepository: OAuthRepository
 
@@ -23,31 +21,18 @@ export class MyAnimeListSuggestionCommand implements ICommand {
   @Inject()
   private readonly myAnimeListProvider: MyAnimeListProvider
 
-  private static readonly pageZeroMetadata = JSON.stringify({ page: 0 })
+  // TODO: refactor this
+  public async execute(reaction: MessageReaction | PartialMessageReaction, userId: string): Promise<void> {
+    const message = reaction.message
 
-  public createCommand() {
-    let command = new SlashCommandBuilder()
-
-    command = command.setName('myanimelist-suggestion')
-    command = command.setDescription('Get an anime suggestion based in your MyAnimeList!')
-
-    return command
-  }
-
-  public async execute(interaction: ChatInputCommandInteraction<CacheType>): Promise<void> {
-    // Discord.js has a timeout of 3s so we defer the response and edit it later
-    await interaction.deferReply()
-
-    const userId = interaction.user.id
-
-    const guildId = interaction.guildId as string
+    const guildId = message.guildId as string
 
     const authPrincipal = await this.oauthRepository.getOAuth({ id: userId, partitionKey: guildId })
 
     const notAuthenticated = !authPrincipal || !authPrincipal.token || !authPrincipal.refreshToken
 
     if (notAuthenticated) {
-      await interaction.editReply('You have not grant permissions to read your list. Please log in to MyAnimeList!')
+      await message.edit('You have not grant permissions to read your list. Please log in to MyAnimeList!')
       return
     }
 
@@ -62,17 +47,23 @@ export class MyAnimeListSuggestionCommand implements ICommand {
 
       await this.oauthRepository.upsertOAuth({ id: userId, partitionKey: guildId }, refreshedPrincipal)
     } else {
-      await interaction.editReply('Your authentication expired. Please log in again to MyAnimeList!')
+      await message.edit('Your authentication expired. Please log in again to MyAnimeList!')
       return
     }
 
-    const reactableKey = { id: interaction.id, partitionKey: guildId }
+    const reactableKey = { id: message.interaction!.id, partitionKey: guildId }
 
-    const reactableRecord = { caller: userId, metadata: MyAnimeListSuggestionCommand.pageZeroMetadata }
+    const reactable = await this.reactableRepository.getReactable(reactableKey)
+
+    const { page }: { page: number } = JSON.parse(reactable!.metadata)
+
+    const currentPage = page + 1
+
+    const reactableRecord = { caller: userId, metadata: JSON.stringify({ page: currentPage }) }
 
     await this.reactableRepository.upsertReactable(reactableKey, reactableRecord)
 
-    const suggestions = await this.myAnimeListProvider.getListBasedSuggestions(token)
+    const suggestions = await this.myAnimeListProvider.getListBasedSuggestions(token, currentPage)
 
     const embeds: EmbedBuilder[] = []
 
@@ -93,9 +84,7 @@ export class MyAnimeListSuggestionCommand implements ICommand {
 
       embeds.push(embed)
 
-      const message = await interaction.editReply({ options: { fetchReply: true }, embeds })
-
-      await message.react('🔜')
+      await message.edit({ options: { fetchReply: true }, embeds })
     }
   }
 

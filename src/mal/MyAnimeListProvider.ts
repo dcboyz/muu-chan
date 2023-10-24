@@ -54,9 +54,7 @@ export class MyAnimeListProvider {
 
     const tokenPrincipal: ITokenPrincipal = await response.json()
 
-    const { tokenValidUntil, refreshTokenValidUntil } = MyAnimeListProvider.calculateTokenValidity(
-      tokenPrincipal.expires_in,
-    )
+    const { tokenValidUntil, refreshTokenValidUntil } = MyAnimeListProvider.calculateTokenValidity(tokenPrincipal.expires_in)
 
     const authenticationPrincipal: IAuthenticationPrincipal = {
       token: tokenPrincipal.access_token,
@@ -87,9 +85,7 @@ export class MyAnimeListProvider {
 
     const tokenPrincipal: ITokenPrincipal = await response.json()
 
-    const { tokenValidUntil, refreshTokenValidUntil } = MyAnimeListProvider.calculateTokenValidity(
-      tokenPrincipal.expires_in,
-    )
+    const { tokenValidUntil, refreshTokenValidUntil } = MyAnimeListProvider.calculateTokenValidity(tokenPrincipal.expires_in)
 
     const authenticationPrincipal: IAuthenticationPrincipal = {
       token: tokenPrincipal.access_token,
@@ -109,7 +105,7 @@ export class MyAnimeListProvider {
     let uri = MyAnimeListProvider.suggestionsUri
 
     if (offset) {
-      uri + `&offset=${offset}`
+      uri += `&offset=${offset}`
     }
 
     const response = await fetch(uri, requestOptions)

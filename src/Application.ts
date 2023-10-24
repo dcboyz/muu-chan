@@ -1,7 +1,7 @@
 import fastify from 'fastify'
 import cron from 'node-cron'
 import { Inject, Service } from 'typedi'
-import { CacheType, Events, Interaction } from 'discord.js'
+import { CacheType, Events, Interaction, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js'
 
 import { LeetcodeCronHandler } from './cron/LeetcodeCronHandler'
 
@@ -41,10 +41,36 @@ export class Application {
     await executor.execute(interaction)
   }
 
+  handleReactable = async (reaction: MessageReaction | PartialMessageReaction, _: User | PartialUser) => {
+    // Bot is reacting to itself.
+    if (_.bot) return
+
+    const message = await reaction.message.fetch()
+
+    const commandName = message.interaction?.commandName
+
+    if (!commandName) {
+      return
+    }
+
+    const executor = this.commandContainer.getReactableForCommand(commandName)
+
+    if (!executor) {
+      return
+    }
+
+    await executor.execute(reaction, message.interaction?.user.id!)
+  }
+
   public async listenToCommands() {
     await this.discordProvider.registerCommands(this.commandContainer.getCommands())
 
     this.discordProvider.wsClient.on(Events.InteractionCreate, this.handleInteraction)
+
+    this.discordProvider.wsClient.on(Events.MessageReactionAdd, this.handleReactable)
+
+    // TODO: Temporary, as we need to separetely handle this.
+    this.discordProvider.wsClient.on(Events.MessageReactionRemove, this.handleReactable)
 
     await this.discordProvider.clientLogin()
   }
