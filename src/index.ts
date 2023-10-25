@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 
 import Container from 'typedi'
 
+// For local development, uncomment here
 // dotenv.config()
 
 import { Application } from './Application'

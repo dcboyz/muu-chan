@@ -56,7 +56,7 @@ export class LeetcodeProvider {
     const options = this.optionsMonitor.currentValue()
 
     const connectOptions: ConnectOptions = {
-      browserWSEndpoint: `wss://chrome.browserless.io?token=${options.browserlessToken}`,
+      browserWSEndpoint: options.browserlessToken,
     }
 
     const browser = await puppeteer.connect(connectOptions)

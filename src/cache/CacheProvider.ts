@@ -43,6 +43,9 @@ export class CacheProvider {
       this._cache = createClient({
         url: options.url,
         password: options.password,
+        socket: {
+          connectTimeout: 5000,
+        },
       })
 
       await this._cache.connect()
